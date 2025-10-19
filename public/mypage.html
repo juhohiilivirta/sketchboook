@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Page — Crapbook</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav id="mainNav">
+  <a href="index.html">CRAPBOOK</a>
+  <a href="login.html" id="loginLink">LOGIN</a>
+  <a href="signup.html" id="signupLink">SIGN UP</a>
+  <a href="mypage.html" id="myPageLink" style="display:none;">MY PAGE</a>
+  <a href="#" id="logoutLink" style="display:none;">LOGOUT</a>
+  <a href="about.html">ABOUT</a>
+
+</nav>
+
+
+  <div id="controls">
+    <span id="erase">CLEAR ALL</span>
+    <span id="undo">UNDO</span>
+    <span id="download">DOWNLOAD (JPG)</span>
+    <span id="style">STYLE: NORMAL</span>
+    <button id="save">SAVE ENTRY</button>
+  </div>
+
+  <div class="slider-container" id="sprayControls">
+    <label>SPRAY INTENSITY</label>
+    <input type="range" id="intensity" min="10" max="200" value="50">
+    <label>RADIUS</label>
+    <input type="range" id="radius" min="5" max="60" value="20">
+  </div>
+
+  <canvas id="piirtokangas"></canvas>
+
+  <textarea id="entryText" placeholder="Write something about your day..."></textarea>
+
+  <h2 style="margin-left:2%;">My Entries</h2>
+  <div id="entries"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
