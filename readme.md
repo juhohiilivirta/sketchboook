@@ -56,11 +56,11 @@ crapbook/.
    cd crapbook
 
 3. Install dependencies:
-    bash
+   ```bash
     npm install
 
 4. Start the server:
-    terminal bash
+   ```bash
     node server.js
 
 5. Open in your browser:
