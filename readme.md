@@ -16,20 +16,34 @@ Users can draw with intentionally limited tools, write short notes, and share th
 
 ## Project structure
 
-crapbook/
-├── public/
-│ ├── index.html # Frontpage (latest drawings)
-│ ├── mypage.html # Personal drawing page
-│ ├── login.html # User login
-│ ├── signup.html # Create account
-│ ├── about.html # About Crapbook
-│ ├── style.css # Shared styles
-│ ├── script.js # Drawing + entries logic
-│ └── front.js # Frontpage scripts
-├── server.js # Node.js + Express backend
-├── package.json # Dependencies
-├── .gitignore
-└── README.md
+crapbook/. 
+
+├── public/. 
+
+│ ├── index.html # Frontpage (latest drawings). 
+
+│ ├── mypage.html # Personal drawing page. 
+
+│ ├── login.html # User login. 
+
+│ ├── signup.html # Create account. 
+
+│ ├── about.html # About Crapbook. 
+
+│ ├── style.css # Shared styles. 
+
+│ ├── script.js # Drawing + entries logic. 
+
+│ └── front.js # Frontpage scripts. 
+
+├── server.js # Node.js + Express backend. 
+
+├── package.json # Dependencies. 
+
+├── .gitignore. 
+
+└── README.md. 
+
 
 ---
 
