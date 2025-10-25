@@ -66,7 +66,7 @@ crapbook/.
 5. Open in your browser:
     http://localhost:3001
 
-Note
+## Note
 When you sign up or log in, your user information (email, username, and password) is stored locally in users.json. Each time a user posts a drawing, it is saved to entries.json and the image file is placed in public/uploads/.
 
 ## Privacy & Ownership
