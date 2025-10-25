@@ -1,5 +1,3 @@
 gitignorenode_modules/
-uploads/
-entries.json
 users.json
 .env
