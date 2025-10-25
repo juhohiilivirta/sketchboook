@@ -64,7 +64,7 @@ crapbook/.
     node server.js
 
 5. Open in your browser:
-    http://localhost:3000
+    http://localhost:3001
 
 ## Privacy & Ownership
 Crapbook does not track or sell user data.
