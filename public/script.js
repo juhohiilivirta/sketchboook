@@ -60,6 +60,15 @@ if (viewedUser) {
     });
 }
 
+// --- OHITA LUKITUS ETUSIVULLA ---
+if (window.location.pathname.endsWith("index.html") || window.location.pathname === "/") {
+  console.log("Homepage detected — drawing allowed without login.");
+  localStorage.setItem("allowDrawWithoutLogin", "true");
+} else {
+  localStorage.removeItem("allowDrawWithoutLogin");
+}
+
+
 // --- DRAWING TOOL ---
 const canvas = document.getElementById("piirtokangas");
 const ctx = canvas.getContext("2d");
@@ -200,28 +209,49 @@ document.getElementById("download").addEventListener("click", () => {
   link.click();
 });
 
-// --- SAVE ENTRY ---
+// --- POST ENTRY (OR LOGIN NOTICE) ---
 document.getElementById("save").addEventListener("click", async () => {
   const userId = localStorage.getItem("userId");
-  if (!userId) return alert("Please log in to save.");
-
+  const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
   const image = canvas.toDataURL("image/png");
-  const text = document.getElementById("entryText").value || "";
+  const textField = document.getElementById("entryText");
+  const text = textField ? textField.value : "";
 
+  // Jos ollaan etusivulla ja käyttäjä ei ole kirjautunut
+  if (onFrontpage && (!userId || userId === "null")) {
+    alert("You need to log in before posting.");
+    return;
+  }
+
+  // Jos ei kirjautunut ollenkaan (mikä tahansa sivu)
+  if (!userId || userId === "null") {
+    alert("You must be logged in to post.");
+    return;
+  }
+
+  // Lähetetään piirros palvelimelle
   const res = await fetch("/entries", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, image, text })
   });
 
-  if (res.ok) {
-    alert("Entry saved!");
-    loadEntries();
-  } else {
-    const msg = await res.text();
-    alert("Failed to save entry: " + msg);
+if (res.ok) {
+  alert("Your post has been published!");
+
+  // Päivitetään näkymä heti ilman refreshiä
+  const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+  if (onFrontpage && typeof loadFrontEntries === "function") {
+    loadFrontEntries(); // Etusivun päivitys
+  } else if (typeof loadEntries === "function") {
+    loadEntries(); // My Page -päivitys
   }
+} else {
+  const msg = await res.text();
+  alert("Failed to post: " + msg);
+}
 });
+
 
 // --- LOAD & DELETE ENTRIES ---
 async function loadEntries() {
@@ -289,8 +319,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const heading = document.querySelector("h2"); // oletuksena "My Entries"
 
   const isOwnPage = !viewedUser || viewedUser === currentUserId;
+  const allowFreeDraw = localStorage.getItem("allowDrawWithoutLogin");
 
-  if (!currentUserId || currentUserId === "null" || !isOwnPage) {
+  // Jos käyttäjä on etusivulla (index.html), ei piiloteta piirtoaluetta
+  const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+
+  if ((!currentUserId || currentUserId === "null" || !isOwnPage) && !allowFreeDraw && !onFrontpage) {
     console.warn("Viewer not owner — hiding draw UI");
 
     // Piilotetaan piirtoalue ja siihen liittyvät elementit
@@ -298,10 +332,26 @@ window.addEventListener("DOMContentLoaded", () => {
       if (el) el.style.display = "none";
     });
   } else {
-    console.log("User is viewing their own page → draw UI visible");
+    console.log("User is viewing their own page or on frontpage → draw UI visible");
     [canvas, controls, sprayControls, textArea, saveBtn, heading].forEach(el => {
       if (el) el.style.display = "";
     });
+  }
+});
+
+// --- PIILOTETAAN "ET OLE KIRJAUTUNUT" -TEKSTI JOS ON KIRJAUTUNUT SISÄÄN ---
+window.addEventListener("DOMContentLoaded", () => {
+  const userId = localStorage.getItem("userId");
+  const notice = document.getElementById("loginNotice");
+
+  // Jos ollaan etusivulla ja käyttäjä on kirjautunut, piilotetaan teksti
+  const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+  if (onFrontpage && notice) {
+    if (userId && userId !== "null") {
+      notice.style.display = "none";
+    } else {
+      notice.style.display = "block";
+    }
   }
 });
 

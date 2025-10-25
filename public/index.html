@@ -15,6 +15,28 @@
   <a href="about.html">ABOUT</a>
 </nav>
 
+  <div id="controls">
+    <span id="erase">CLEAR ALL</span>
+    <span id="undo">UNDO</span>
+    <span id="download">DOWNLOAD (JPG)</span>
+    <span id="style">STYLE: NORMAL</span>
+    <button id="save">SAVE ENTRY</button>
+  </div>
+
+  <div class="slider-container" id="sprayControls">
+    <label>SPRAY INTENSITY</label>
+    <input type="range" id="intensity" min="10" max="200" value="50">
+    <label>RADIUS</label>
+    <input type="range" id="radius" min="5" max="60" value="20">
+  </div>
+
+  <canvas id="piirtokangas"></canvas>
+<p id="loginNotice" style="width:96%;margin:20px auto;font-size:15pt;text-align:center;">
+  You are not logged in. If you want to publish your drawing on your own page, please log in before drawing.
+</p>
+
+
+
 <h2 style="margin-top:100px; margin-left:2%;">Latest Entries</h2>
   <div id="frontEntries"></div>
 
