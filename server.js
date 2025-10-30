@@ -66,9 +66,9 @@ app.post("/signup", async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: '"Crapbook" <no-reply@crapbook.fi>',
+      from: '"Sketchboook" <no-reply@sketchboook.com>',
       to: email,
-      subject: "Your Crapbook password",
+      subject: "Your Sketchboook password",
       text: `Hello ${username},\n\nYour password is: ${password}\n\nYou can now log in at http://localhost:${PORT}/login.html`,
     });
 

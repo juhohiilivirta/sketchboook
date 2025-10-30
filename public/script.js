@@ -1,4 +1,4 @@
-// --- CRAPBOOK FRONTEND ---
+// --- SKETCHBOOOK FRONTEND ---
 // --- UNIVERSAL NAVIGATION HANDLER (ROBUST FINAL VERSION) ---
 function updateNavigation() {
   const userId = localStorage.getItem("userId");
@@ -56,7 +56,7 @@ if (viewedUser) {
     .then(r => r.json())
     .then(users => {
       const u = users.find(u => u.id === viewedUser);
-      if (u) document.title = `${u.username} — Crapbook`;
+      if (u) document.title = `${u.username} — Sketchboook`;
     });
 }
 

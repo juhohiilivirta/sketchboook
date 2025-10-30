@@ -1,6 +1,6 @@
-# Crapbook
+# Sketchboook
 
-**Crapbook** is a web-based social network and creative platform for artists who embrace creativity and imperfection.  
+**Sketchboook** is a web-based social network and creative platform for artists who embrace creativity and imperfection.  
 Users can draw with intentionally limited tools, write short notes, and share their work on personal artist pages.
 
 ---
@@ -16,7 +16,7 @@ Users can draw with intentionally limited tools, write short notes, and share th
 
 ## Project structure
 
-crapbook/. 
+Sketchboook/. 
 
 ├── public/. 
 
@@ -28,7 +28,7 @@ crapbook/.
 
 │ ├── signup.html # Create account. 
 
-│ ├── about.html # About Crapbook. 
+│ ├── about.html # About Sketchboook. 
 
 │ ├── style.css # Shared styles. 
 
@@ -52,8 +52,8 @@ crapbook/.
 1. Install [Node.js](https://nodejs.org/)  
 2. Clone this repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/crapbook.git
-   cd crapbook
+   git clone https://github.com/juhohiilivirta/sketchboook.git
+   cd sketchboook
 
 3. Install dependencies:
    ```bash
@@ -70,7 +70,7 @@ crapbook/.
 When you sign up or log in, your user information (email, username, and password) is stored locally in users.json. Each time a user posts a drawing, it is saved to entries.json and the image file is placed in public/uploads/.
 
 ## Privacy & Ownership
-Crapbook does not track or sell user data.
+Sketchboook does not track or sell user data.
 Only the drawings, usernames, and text entries you choose to share are stored.
 All rights to your artwork remain entirely yours.
 
