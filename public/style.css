@@ -111,12 +111,13 @@ button#save {
   padding: 10px 20px;
   font-size: 15pt;
   border: 1px solid #000;
-  background: floralwhite;
+  background: transparent;
   cursor: pointer;
 }
 
 button#save:hover {
-  background: #f0e8d8;
+  background: #ffffac;
+  text-decoration: none;
 }
 
 /* --- ENTRYT (blogityyli) --- */
