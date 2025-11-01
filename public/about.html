@@ -21,7 +21,7 @@
 <div class="content">
   <h2>ABOUT SKETCHBOOOK</h2>
   <p>
-    Sketchboook is a web-based social network and creative platform founded in 2025 by Juho Hiilivirta. 
+    Sketchboook is a web-based social network and creative platform. 
     Sketchboook is designed for artists who embrace creativity and imperfection. 
     It allows users to draw with intentionally limited tools, share their work, and connect with others through personal artist pages that showcase their creations.
   </p>
@@ -32,8 +32,39 @@
   </p>
 
   <p>
-    All rights to the artwork you create and upload remain entirely yours. 
+  Sketchboook was founded in 2025 by Juho Hiilivirta. All artwork created and uploaded by users remains their sole property.
   </p>
 </div>
+<script>
+  const userId = localStorage.getItem("userId");
+
+  const loginLink = document.getElementById("loginLink");
+  const signupLink = document.getElementById("signupLink");
+  const myPageLink = document.getElementById("myPageLink");
+  const logoutLink = document.getElementById("logoutLink");
+
+  if (userId && userId !== "null") {
+    // käyttäjä on kirjautunut sisään → näytä "My Page" ja "Logout"
+    if (loginLink) loginLink.style.display = "none";
+    if (signupLink) signupLink.style.display = "none";
+    if (myPageLink) myPageLink.style.display = "inline";
+    if (logoutLink) logoutLink.style.display = "inline";
+  } else {
+    // ei kirjautunut → näytä Login & Signup
+    if (loginLink) loginLink.style.display = "inline";
+    if (signupLink) signupLink.style.display = "inline";
+    if (myPageLink) myPageLink.style.display = "none";
+    if (logoutLink) logoutLink.style.display = "none";
+  }
+
+  // Logout-nappi
+  if (logoutLink) {
+    logoutLink.addEventListener("click", e => {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
+  }
+</script>
 </body>
 </html>

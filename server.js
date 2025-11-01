@@ -100,7 +100,7 @@ app.get("/entries", (req, res) => {
 // POST uusi merkintä
 app.post("/entries", (req, res) => {
   try {
-    const { userId, image, text } = req.body;
+const { userId, image, text, bgColor } = req.body;
     if (!userId || !image) return res.status(400).send("Missing data");
 
     const entries = JSON.parse(fs.readFileSync(ENTRIES_FILE, "utf-8"));
@@ -153,3 +153,4 @@ app.get("/users", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+
