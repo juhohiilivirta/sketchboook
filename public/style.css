@@ -3,13 +3,13 @@
 ================================= */
 
 :root {
-  --bg-color: floralwhite;
+  --bg-color: #f7f7f7;
   --text-color: #000;
   --border-color: #000;
-  --accent-bg: #ffffac;
+  --accent-bg: #f7f7f7;
   --muted-text: #444;
   --content-width: 70%;
-  --font-size: 15pt;
+  --font-size: 18pt;
   --font-family: sans-serif;
 }
 
@@ -128,7 +128,7 @@ textarea {
   border: 1px solid #ccc;
   padding: 8px;
   box-sizing: border-box;
-  background: #fffaf0;
+  background: transparent;
   resize: vertical;
   font: inherit;
 }
@@ -157,17 +157,17 @@ button#save {
   display: block;
   margin: 20px auto;
   padding: 10px 25px;
-  font-size: 15pt;
+  font-size: 18pt;
   font-family: inherit;
   border: 1px solid #000;
-  background: floralwhite;
+  background: transparent;
   cursor: pointer;
   color: #000;
   transition: background 0.2s ease;
 }
 
 button#save:hover {
-  background: #ffffac;
+  background: #e7e7e7;
   text-decoration: none;
 }
 
@@ -176,7 +176,7 @@ button#save:hover {
 ================================= */
 
 .entry {
-  width: 96%;
+  width: 66%;
   margin: 0 auto 40px;
   padding-bottom: 20px;
   border-bottom: 1px solid #ccc;
@@ -207,6 +207,11 @@ button#save:hover {
   margin-top: 4px;
   margin-bottom: 10px;
 }
+
+#loginNotice {
+  text-align: center;
+  font-size: inherit; /* käyttää automaattisesti 15pt kuten muu sivu */
+  color: var(--text-color);}
 
 /* ================================
    TYPOGRAPHY / LAYOUT

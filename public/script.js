@@ -72,7 +72,7 @@ if (window.location.pathname.endsWith("index.html") || window.location.pathname 
 // --- DRAWING TOOL ---
 const canvas = document.getElementById("piirtokangas");
 const ctx = canvas.getContext("2d");
-const taustaVari = "floralwhite";
+const taustaVari = "#f7f7f7";
 
 let piirretaan = false;
 let edellinenX = 0;
