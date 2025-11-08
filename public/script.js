@@ -74,6 +74,8 @@ const canvas = document.getElementById("piirtokangas");
 const ctx = canvas.getContext("2d");
 const taustaVari = "#f7f7f7";
 
+canvas.classList.add("cursor-pencil");
+
 let piirretaan = false;
 let edellinenX = 0;
 let edellinenY = 0;
@@ -112,7 +114,7 @@ function resizeCanvas() {
   temp.getContext("2d").drawImage(canvas, 0, 0);
 
   canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight * 0.8;
+  canvas.height = window.innerHeight * 0.75;
 
   ctx.fillStyle = taustaVari;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -191,6 +193,11 @@ document.getElementById("style").addEventListener("click", () => {
 
   document.getElementById("style").textContent = `STYLE: ${tyyli.toUpperCase()}`;
   sprayControls.style.display = (tyyli === "spray") ? "block" : "none";
+
+  canvas.classList.remove("cursor-pencil", "cursor-eraser", "cursor-spray");
+  if (tyyli === "normal") canvas.classList.add("cursor-pencil");
+  if (tyyli === "eraser") canvas.classList.add("cursor-eraser");
+  if (tyyli === "spray") canvas.classList.add("cursor-spray");
 });
 
 document.getElementById("download").addEventListener("click", () => {
@@ -239,7 +246,14 @@ document.getElementById("save").addEventListener("click", async () => {
 if (res.ok) {
   alert("Your post has been published!");
 
-  // Päivitetään näkymä heti ilman refreshiä
+  // 🔹 Tyhjennä canvas tallennuksen jälkeen
+  ctx.fillStyle = taustaVari;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 🔹 Tyhjennä tekstikenttä jos se on olemassa
+  if (textField) textField.value = "";
+
+  // Päivitä näkymä ilman sivun uudelleenlatausta
   const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
   if (onFrontpage && typeof loadFrontEntries === "function") {
     loadFrontEntries(); // Etusivun päivitys
@@ -251,6 +265,7 @@ if (res.ok) {
   alert("Failed to post: " + msg);
 }
 });
+
 
 
 // --- LOAD & DELETE ENTRIES ---
@@ -273,8 +288,8 @@ async function loadEntries() {
   document.getElementById("entries").innerHTML = filtered.map(e => `
     <div class="entry">
       <img src="${e.image_path}" alt="drawing">
-      <p>${e.text || ""}</p>
       <small>${new Date(e.date).toLocaleString()}</small>
+      <p>${e.text || ""}</p>
       ${!viewedUser && e.user_id === currentUserId
         ? `<p><a href="#" class="delete-entry" data-id="${e.id}">Delete entry</a></p>`
         : ""}

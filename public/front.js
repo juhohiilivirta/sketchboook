@@ -18,8 +18,10 @@ async function loadFrontEntries() {
     const username = userMap[e.user_id] || `User ${e.user_id}`;
     return `
       <div class="entry">
-        <img src="${e.image_path}" alt="drawing">
-        <p><a href="mypage.html?user=${e.user_id}">${username}</a></p>
+      <a href="mypage.html?user=${e.user_id}">
+      <img src="${e.image_path}" alt="drawing">
+      </a>        
+      <p><a href="mypage.html?user=${e.user_id}">${username}</a></p>
         <small>${new Date(e.date).toLocaleString()}</small>
       </div>
     `;

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sketchboook — Frontpage</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -20,7 +21,6 @@
     <span id="undo">UNDO</span>
     <span id="download">DOWNLOAD (JPG)</span>
     <span id="style">STYLE: NORMAL</span>
-    <button id="save">SAVE ENTRY</button>
   </div>
 
   <div class="slider-container" id="sprayControls">
@@ -31,9 +31,13 @@
   </div>
 
   <canvas id="piirtokangas"></canvas>
+  <div class="entry-input">
   <p id="loginNotice">
   You are not logged in. If you want to publish your drawing on your own page, please log in before drawing.
   </p>
+  <button id="save">POST ENTRY</button>
+</div>
+
 
 <h2 style="margin-top:100px; margin-left:2%;">Latest Entries</h2>
   <div id="frontEntries"></div>

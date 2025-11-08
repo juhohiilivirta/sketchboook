@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Page — Sketchboook</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -22,7 +23,6 @@
     <span id="undo">UNDO</span>
     <span id="download">DOWNLOAD (JPG)</span>
     <span id="style">STYLE: NORMAL</span>
-    <button id="save">SAVE ENTRY</button>
   </div>
 
   <div class="slider-container" id="sprayControls">
@@ -34,7 +34,11 @@
 
   <canvas id="piirtokangas"></canvas>
 
+<div class="entry-input">
   <textarea id="entryText" placeholder="Write something about your day..."></textarea>
+  <br />
+  <button id="save">POST ENTRY</button>
+</div>
 
   <h2 style="margin-left:2%;">My Entries</h2>
   <div id="entries"></div>
