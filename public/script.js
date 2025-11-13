@@ -9,26 +9,22 @@ function updateNavigation() {
   const logoutLink = document.getElementById("logoutLink");
 
   if (!loginLink || !signupLink || !myPageLink || !logoutLink) {
-    // Jos elementtejä ei ole vielä olemassa, yritetään pian uudelleen
     setTimeout(updateNavigation, 100);
     return;
   }
 
   if (userId && userId !== "null") {
-    // 🔹 Kirjautunut
     loginLink.style.display = "none";
     signupLink.style.display = "none";
     myPageLink.style.display = "inline";
     logoutLink.style.display = "inline";
   } else {
-    // 🔹 Ei kirjautunut
     loginLink.style.display = "inline";
     signupLink.style.display = "inline";
     myPageLink.style.display = "none";
     logoutLink.style.display = "none";
   }
 
-  // Logout-toiminto
   if (!logoutLink.hasListener) {
     logoutLink.addEventListener("click", (e) => {
       e.preventDefault();
@@ -39,14 +35,10 @@ function updateNavigation() {
   }
 }
 
-// Ajetaan heti ja vielä varmistukseksi DOMContentLoadedin jälkeen
 updateNavigation();
 window.addEventListener("DOMContentLoaded", updateNavigation);
 
-
-
-
-// --- LOGIN STATUS ---
+// --- PAGE TITLE USER NAME ---
 const params = new URLSearchParams(window.location.search);
 const viewedUser = params.get("user");
 const userId = localStorage.getItem("userId");
@@ -60,14 +52,12 @@ if (viewedUser) {
     });
 }
 
-// --- OHITA LUKITUS ETUSIVULLA ---
+// Allow drawing on index even without login
 if (window.location.pathname.endsWith("index.html") || window.location.pathname === "/") {
-  console.log("Homepage detected — drawing allowed without login.");
   localStorage.setItem("allowDrawWithoutLogin", "true");
 } else {
   localStorage.removeItem("allowDrawWithoutLogin");
 }
-
 
 // --- DRAWING TOOL ---
 const canvas = document.getElementById("piirtokangas");
@@ -126,8 +116,7 @@ resizeCanvas();
 function etaisyysReunasta(x, y) {
   const margX = Math.min(x, canvas.width - x);
   const margY = Math.min(y, canvas.height - y);
-  const minEtaisyys = Math.min(margX, margY);
-  return minEtaisyys / (canvas.width / 2);
+  return Math.min(margX, margY) / (canvas.width / 2);
 }
 
 function kohina(strength) {
@@ -166,9 +155,7 @@ canvas.addEventListener("pointermove", (e) => {
 
     edellinenX = x + kohinaX;
     edellinenY = y + kohinaY;
-  }
-
-  else if (tyyli === "spray") {
+  } else if (tyyli === "spray") {
     ctx.fillStyle = "#000";
     for (let i = 0; i < sprayTiheys; i++) {
       const kulma = Math.random() * 2 * Math.PI;
@@ -216,7 +203,7 @@ document.getElementById("download").addEventListener("click", () => {
   link.click();
 });
 
-// --- POST ENTRY (OR LOGIN NOTICE) ---
+// --- POST ENTRY ---
 document.getElementById("save").addEventListener("click", async () => {
   const userId = localStorage.getItem("userId");
   const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
@@ -224,51 +211,40 @@ document.getElementById("save").addEventListener("click", async () => {
   const textField = document.getElementById("entryText");
   const text = textField ? textField.value : "";
 
-  // Jos ollaan etusivulla ja käyttäjä ei ole kirjautunut
   if (onFrontpage && (!userId || userId === "null")) {
     alert("You need to log in before posting.");
     return;
   }
-
-  // Jos ei kirjautunut ollenkaan (mikä tahansa sivu)
   if (!userId || userId === "null") {
     alert("You must be logged in to post.");
     return;
   }
 
-  // Lähetetään piirros palvelimelle
   const res = await fetch("/entries", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, image, text })
   });
 
-if (res.ok) {
-  alert("Your post has been published!");
+  if (res.ok) {
+    alert("Your post has been published!");
 
-  // 🔹 Tyhjennä canvas tallennuksen jälkeen
-  ctx.fillStyle = taustaVari;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = taustaVari;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (textField) textField.value = "";
 
-  // 🔹 Tyhjennä tekstikenttä jos se on olemassa
-  if (textField) textField.value = "";
-
-  // Päivitä näkymä ilman sivun uudelleenlatausta
-  const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
-  if (onFrontpage && typeof loadFrontEntries === "function") {
-    loadFrontEntries(); // Etusivun päivitys
-  } else if (typeof loadEntries === "function") {
-    loadEntries(); // My Page -päivitys
+    if (onFrontpage && typeof loadFrontEntries === "function") {
+      loadFrontEntries();
+    } else if (typeof loadEntries === "function") {
+      loadEntries();
+    }
+  } else {
+    const msg = await res.text();
+    alert("Failed to post: " + msg);
   }
-} else {
-  const msg = await res.text();
-  alert("Failed to post: " + msg);
-}
 });
 
-
-
-// --- LOAD & DELETE ENTRIES ---
+// --- LOAD & DELETE ENTRIES (INCL. SCROLL TARGET) ---
 async function loadEntries() {
   const res = await fetch("/entries");
   const all = await res.json();
@@ -277,16 +253,14 @@ async function loadEntries() {
   const params = new URLSearchParams(window.location.search);
   const viewedUser = params.get("user");
 
-  // Jos katsot toista käyttäjää
   const filtered = viewedUser
     ? all.filter(e => e.user_id === viewedUser)
     : all.filter(e => e.user_id === currentUserId);
 
-  // Uusin ensin
   filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   document.getElementById("entries").innerHTML = filtered.map(e => `
-    <div class="entry">
+    <div class="entry" id="entry-${e.id}">
       <img src="${e.image_path}" alt="drawing">
       <small>${new Date(e.date).toLocaleString()}</small>
       <p>${e.text || ""}</p>
@@ -296,15 +270,7 @@ async function loadEntries() {
     </div>
   `).join("");
 
-  // Estetään piirtäminen jos katsot toista käyttäjää
-  if (viewedUser && viewedUser !== currentUserId) {
-    canvas.style.pointerEvents = "none";
-    document.getElementById("save").disabled = true;
-    document.getElementById("save").style.opacity = "0.5";
-  }
-
-  // Poisto omilla sivuilla
-  if (!viewedUser || viewedUser === currentUserId) {
+  if ((!viewedUser || viewedUser === currentUserId)) {
     document.querySelectorAll(".delete-entry").forEach(link => {
       link.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -316,11 +282,25 @@ async function loadEntries() {
       });
     });
   }
+
+  // ✅ SCROLL TO SPECIFIC ENTRY
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetEntry = urlParams.get("entry");
+  if (targetEntry) {
+    const targetEl = document.getElementById(`entry-${targetEntry}`);
+    if (targetEl) {
+      setTimeout(() => {
+        targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        targetEl.style.background = "var(--bg-color)";
+        setTimeout(() => targetEl.style.background = "transparent", 2000);
+      }, 150);
+    }
+  }
 }
 
 loadEntries();
 
-// --- PIILOTETAAN PIIRTOALUE JA OTSIKKO JOS EI KIRJAUTUNUT TAI KATSOO TOISEN SIVUA ---
+// --- HIDE DRAW TOOLS IF VIEWING ANOTHER USER ---
 window.addEventListener("DOMContentLoaded", () => {
   const currentUserId = localStorage.getItem("userId");
   const params = new URLSearchParams(window.location.search);
@@ -331,42 +311,25 @@ window.addEventListener("DOMContentLoaded", () => {
   const sprayControls = document.getElementById("sprayControls");
   const textArea = document.getElementById("entryText");
   const saveBtn = document.getElementById("save");
-  const heading = document.querySelector("h2"); // oletuksena "My Entries"
+  const heading = document.querySelector("h2");
 
   const isOwnPage = !viewedUser || viewedUser === currentUserId;
-  const allowFreeDraw = localStorage.getItem("allowDrawWithoutLogin");
-
-  // Jos käyttäjä on etusivulla (index.html), ei piiloteta piirtoaluetta
   const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
 
-  if ((!currentUserId || currentUserId === "null" || !isOwnPage) && !allowFreeDraw && !onFrontpage) {
-    console.warn("Viewer not owner — hiding draw UI");
-
-    // Piilotetaan piirtoalue ja siihen liittyvät elementit
+  if ((!currentUserId || currentUserId === "null" || !isOwnPage) && !onFrontpage) {
     [canvas, controls, sprayControls, textArea, saveBtn, heading].forEach(el => {
       if (el) el.style.display = "none";
-    });
-  } else {
-    console.log("User is viewing their own page or on frontpage → draw UI visible");
-    [canvas, controls, sprayControls, textArea, saveBtn, heading].forEach(el => {
-      if (el) el.style.display = "";
     });
   }
 });
 
-// --- PIILOTETAAN "ET OLE KIRJAUTUNUT" -TEKSTI JOS ON KIRJAUTUNUT SISÄÄN ---
+// --- HIDE LOGIN NOTICE IF LOGGED IN ---
 window.addEventListener("DOMContentLoaded", () => {
   const userId = localStorage.getItem("userId");
   const notice = document.getElementById("loginNotice");
 
-  // Jos ollaan etusivulla ja käyttäjä on kirjautunut, piilotetaan teksti
   const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
   if (onFrontpage && notice) {
-    if (userId && userId !== "null") {
-      notice.style.display = "none";
-    } else {
-      notice.style.display = "block";
-    }
+    notice.style.display = (userId && userId !== "null") ? "none" : "block";
   }
 });
-
