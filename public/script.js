@@ -1,4 +1,6 @@
 // --- SKETCHBOOOK FRONTEND ---
+// --- SKETCHBOOOK FRONTEND 2 ---
+
 // --- UNIVERSAL NAVIGATION HANDLER (ROBUST FINAL VERSION) ---
 function updateNavigation() {
   const userId = localStorage.getItem("userId");
@@ -69,7 +71,7 @@ canvas.classList.add("cursor-pencil");
 let piirretaan = false;
 let edellinenX = 0;
 let edellinenY = 0;
-let tyyli = "normal";
+let tyyli = "pencil";
 
 let sprayTiheys = 50;
 let spraySäde = 20;
@@ -96,6 +98,43 @@ function palautaUndo() {
   };
   img.src = viimeisin;
 }
+
+let paperStyle = "blank"; // "blank" | "grid" | "dot"
+
+function drawPaperBackground() {
+  // Tyhjennetään tausta
+  ctx.fillStyle = taustaVari;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // GRID
+  if (paperStyle === "grid") {
+    ctx.strokeStyle = "rgba(0,0,0,0.1)"; // hieman tummempi kuin #ddd
+    ctx.lineWidth = 1;
+    for (let x = 50; x < canvas.width; x += 50) {
+      ctx.beginPath();
+      ctx.moveTo(x + 0.5, 0);
+      ctx.lineTo(x + 0.5, canvas.height);
+      ctx.stroke();
+    }
+    for (let y = 50; y < canvas.height; y += 50) {
+      ctx.beginPath();
+      ctx.moveTo(0, y + 0.5);
+      ctx.lineTo(canvas.width, y + 0.5);
+      ctx.stroke();
+    }
+  }
+
+  // DOT
+  if (paperStyle === "dot") {
+    ctx.fillStyle = "rgba(0,0,0,0.5)"; // aiempaa näkyvämpi piste
+    for (let x = 25; x < canvas.width; x += 50) {
+      for (let y = 25; y < canvas.height; y += 50) {
+        ctx.fillRect(x, y, 1.5, 1.5); // vähän suurempi piste
+      }
+    }
+  }
+}
+
 
 function resizeCanvas() {
   const temp = document.createElement("canvas");
@@ -139,7 +178,7 @@ canvas.addEventListener("pointermove", (e) => {
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
 
-  if (tyyli === "normal" || tyyli === "eraser") {
+  if (tyyli === "pencil" || tyyli === "eraser") {
     const suhteellinenEtaisyys = etaisyysReunasta(x, y);
     const värinäVoimakkuus = (1 - suhteellinenEtaisyys) * 10;
     const kohinaX = kohina(värinäVoimakkuus);
@@ -167,41 +206,86 @@ canvas.addEventListener("pointermove", (e) => {
 
 document.getElementById("erase").addEventListener("click", () => {
   tallennaUndo();
-  ctx.fillStyle = taustaVari;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawPaperBackground();
 });
+
 
 document.getElementById("undo").addEventListener("click", () => palautaUndo());
 
 document.getElementById("style").addEventListener("click", () => {
-  if (tyyli === "normal") tyyli = "spray";
+  if (tyyli === "pencil") tyyli = "spray";
   else if (tyyli === "spray") tyyli = "eraser";
-  else tyyli = "normal";
+  else tyyli = "pencil";
 
   document.getElementById("style").textContent = `STYLE: ${tyyli.toUpperCase()}`;
   sprayControls.style.display = (tyyli === "spray") ? "block" : "none";
 
   canvas.classList.remove("cursor-pencil", "cursor-eraser", "cursor-spray");
-  if (tyyli === "normal") canvas.classList.add("cursor-pencil");
+  if (tyyli === "pencil") canvas.classList.add("cursor-pencil");
   if (tyyli === "eraser") canvas.classList.add("cursor-eraser");
   if (tyyli === "spray") canvas.classList.add("cursor-spray");
 });
 
+document.getElementById("paper").addEventListener("click", () => {
+  if (paperStyle === "blank") paperStyle = "grid";
+  else if (paperStyle === "grid") paperStyle = "dot";
+  else paperStyle = "blank";
+
+  document.getElementById("paper").textContent = `PAPER: ${paperStyle.toUpperCase()}`;
+  drawPaperBackground();
+});
+
+
 document.getElementById("download").addEventListener("click", () => {
+  const scale = 2; // 🔹 tallennusresoluution kerroin
   const exportCanvas = document.createElement("canvas");
-  exportCanvas.width = canvas.width;
-  exportCanvas.height = canvas.height;
+  exportCanvas.width = canvas.width * scale;
+  exportCanvas.height = canvas.height * scale;
   const exportCtx = exportCanvas.getContext("2d");
 
-  exportCtx.fillStyle = taustaVari;
-  exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-  exportCtx.drawImage(canvas, 0, 0);
+  // Skaalataan kaikki piirrot 2x
+  exportCtx.scale(scale, scale);
 
+  // --- Piirretään tausta paperityylin mukaan ---
+  exportCtx.fillStyle = taustaVari;
+  exportCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (paperStyle === "grid") {
+    exportCtx.strokeStyle = "rgba(0,0,0,0.1)";
+    exportCtx.lineWidth = 1;
+    for (let x = 50; x < canvas.width; x += 50) {
+      exportCtx.beginPath();
+      exportCtx.moveTo(x + 0.5, 0);
+      exportCtx.lineTo(x + 0.5, canvas.height);
+      exportCtx.stroke();
+    }
+    for (let y = 50; y < canvas.height; y += 50) {
+      exportCtx.beginPath();
+      exportCtx.moveTo(0, y + 0.5);
+      exportCtx.lineTo(canvas.width, y + 0.5);
+      exportCtx.stroke();
+    }
+  }
+
+  if (paperStyle === "dot") {
+    exportCtx.fillStyle = "rgba(0,0,0,0.5)";
+    for (let x = 25; x < canvas.width; x += 50) {
+      for (let y = 25; y < canvas.height; y += 50) {
+        exportCtx.fillRect(x, y, 1.5, 1.5);
+      }
+    }
+  }
+
+  // --- Piirretään piirros päälle (skaalattuna) ---
+  exportCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+
+  // --- Ladataan 2x laatuinen kuva ---
   const link = document.createElement("a");
-  link.download = "drawing.jpg";
+  link.download = "drawing_highres.jpg";
   link.href = exportCanvas.toDataURL("image/jpeg", 0.95);
   link.click();
 });
+
 
 // --- POST ENTRY ---
 document.getElementById("save").addEventListener("click", async () => {
@@ -252,6 +336,38 @@ async function loadEntries() {
   const currentUserId = localStorage.getItem("userId");
   const params = new URLSearchParams(window.location.search);
   const viewedUser = params.get("user");
+
+// 🔹 Päivitä otsikko jos katsotaan toisen käyttäjän sivua (ei etusivulla)
+const heading = document.querySelector("h2");
+const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+if (heading && !onFrontpage) {
+  if (viewedUser && viewedUser !== currentUserId) {
+    try {
+      const usersRes = await fetch("/users");
+      const users = await usersRes.json();
+      const viewed = users.find(u => String(u.id) === String(viewedUser));
+      if (viewed) {
+        heading.textContent = `${viewed.username}'s page`;
+        heading.style.fontSize = "var(--big-text)";
+        heading.style.textAlign = "center";
+        heading.style.marginTop = "60px";
+      } else {
+        heading.textContent = "Artist — Entries";
+        heading.style.fontSize = "var(--big-text)";
+        heading.style.textAlign = "center";
+        heading.style.marginTop = "60px";
+      }
+    } catch (err) {
+      console.error("User fetch failed:", err);
+    }
+  } else {
+    heading.textContent = "My Entries";
+    heading.style.fontSize = "var(--font-size)";
+    heading.style.textAlign = "left";
+    heading.style.marginTop = "40px";
+  }
+}
+
 
   const filtered = viewedUser
     ? all.filter(e => e.user_id === viewedUser)
@@ -317,7 +433,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const onFrontpage = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
 
   if ((!currentUserId || currentUserId === "null" || !isOwnPage) && !onFrontpage) {
-    [canvas, controls, sprayControls, textArea, saveBtn, heading].forEach(el => {
+    [canvas, controls, sprayControls, textArea, saveBtn].forEach(el => {
       if (el) el.style.display = "none";
     });
   }

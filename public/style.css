@@ -1,13 +1,25 @@
+@font-face {
+  font-family: "Tarsius";
+  src: url("fonts/TarsiusMono-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-color: #f7f7f7;
+  --bg-color-yellow: #f3f3d8;
+  --bg-color-red: #f6c8bd;
   --text-color: #000;
   --border-color: #000;
   --muted-text: #aeaeae;
   --content-width: 70%;
-  --font-family: sans-serif;
+  --font-family: 'Tarsius', sans-serif;
   --font-size: clamp(10pt, 2vw + 0.5rem, 18pt);
+  --border-width: 2px;
+  --small-text: 10pt;
+  --big-text: clamp(10pt, 4vw + 0.5rem, 40pt);
 }
-
 
 html, body {
   margin: 0;
@@ -16,9 +28,9 @@ html, body {
   color: var(--text-color);
   font-family: var(--font-family);
   font-size: var(--font-size);
-  letter-spacing: 0.02em;
   scroll-behavior: smooth;
 }
+
 
 /* ================================
    NAVIGATION
@@ -29,10 +41,10 @@ nav {
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--bg-color);
+  background: var(--bg-color-yellow);
   padding: 10px 20px;
-  border-bottom: 1px solid var(--border-color);
-  z-index: 20;
+  /* border-bottom: var(--border-width) solid var(--border-color); */
+  z-index: 50;
 }
 
 nav a {
@@ -51,15 +63,16 @@ nav a:hover {
 ================================= */
 
 #controls {
-  position: fixed;
-  top: 40px;
+  position: absolute;
+  top: 50px;
   left: 0;
+  width: calc(100% - 0px);
   display: flex;
   justify-content: flex-start; /* 🔹 kaikki vasempaan laitaan */
   align-items: center;
   gap: 20px;                   /* 🔹 väli painikkeiden väliin */
   padding: 20px 10px 10px 20px;
-  background: var(--bg-color);
+  /* background: var(--bg-color); */
   z-index: 10;
 }
 
@@ -69,7 +82,7 @@ nav a:hover {
   cursor: pointer;
   background: none;
   border: none;
-  margin-right: 15px;
+  margin-right: 4px;
   font: inherit;
   color: var(--text-color);
 }
@@ -85,7 +98,7 @@ button#save {
   padding: 10px 25px;
   font-size: var(--font-size);
   font-family: inherit;
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   background: transparent;
   cursor: pointer;
   color: var(--text-color);
@@ -98,6 +111,42 @@ button#save:hover {
 }
 
 
+#controls span,
+#controls a,
+#controls button {
+  display: inline-block;
+  padding: 8px 18px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 9999px; /* 💊 pillerimuoto */
+  background: var(--bg-color);
+  color: var(--text-color);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* Hover-efekti */
+#controls span:hover,
+#controls a:hover,
+#controls button:hover {
+  background: var(--text-color);
+  color: var(--bg-color);
+  text-decoration: none;
+}
+
+/* Klikkaustuntuma */
+#controls span:active,
+#controls a:active,
+#controls button:active {
+  transform: scale(0.97);
+}
+
+/* Vähän väliä nappeihin */
+#controls {
+  gap: 0;
+}
+
 
 /* ================================
    SPRAY SETTINGS
@@ -105,13 +154,14 @@ button#save:hover {
 
 .slider-container {
   display: none;
-  position: fixed;
-  top: 98px;
+  position: absolute;
+  top: 125px;
   left: 0;
-  padding: 8px 20px;
+  width: calc(100% - 0px);
+  padding: 8px 20px 20px 20px;
   box-sizing: border-box;
-  background: var(--bg-color);
-  border-top: 1px solid var(--border-color);
+  /* background: var(--bg-color);
+  border-bottom: var(--border-width) solid var(--border-color); */
   z-index: 25;
 }
 
@@ -128,8 +178,8 @@ canvas {
   display: block;
   width: 100%;
   touch-action: none;
-  border-bottom: 1px solid var(--border-color);
-  margin-top: 100px;
+  border-bottom: var(--border-width) solid var(--border-color);
+  margin-top: 125px;
 }
 
 /* ================================
@@ -149,10 +199,11 @@ canvas {
   flex: 1;
   height: 80px;
   font: inherit;
-  border: 1px solid #ccc;
+  border: var(--border-width) solid #ccc;
   padding: 8px;
   background: transparent;
   resize: vertical;
+  
 }
 
 button {
@@ -160,7 +211,7 @@ button {
   padding: 10px 20px;
   font: inherit;
   font-size: var(--font-size);
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   background: transparent;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -178,15 +229,15 @@ button:hover {
 ================================= */
 
 .cursor-pencil {
-  cursor: url("cursor-pencil.svg") 0 32, auto;
+  cursor: url("img/cursor-pencil.svg") 0 32, auto;
 }
 
 .cursor-eraser {
-  cursor: url("cursor-eraser.svg") 15 15, auto;
+  cursor: url("img/cursor-eraser.svg") 15 15, auto;
 }
 
 .cursor-spray {
-  cursor: url("cursor-spray.svg") 5 0, auto;
+  cursor: url("img/cursor-spray.svg") 5 0, auto;
 }
 
 /* ================================
@@ -220,7 +271,7 @@ a:active {
   width: 96%;
   margin: 0 auto 40px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #000;
+  border-bottom: var(--border-width) solid var(--border-color);
   font-size: var(--font-size);
 }
 
@@ -251,6 +302,16 @@ a:active {
   }
 }
 
+#frontEntries .entry a img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#frontEntries .entry a {
+  display: block;       /* ankkuri täsmälleen kuvan kokoinen */
+  line-height: 0;       /* poistaa mahdollisen “näkymättömän” rivivälin */
+}
 
 .entry img {
   width: 100%;
@@ -275,9 +336,10 @@ a:active {
 }
 
 .entry small {
-  color: var(--text-color);
+  color: var(--muted-text);
   display: block;
   margin-top: 4px;
+  font-size: var(--small-text);
 }
 
 #loginNotice {
@@ -291,6 +353,12 @@ a:active {
 ================================= */
 
 h2 {
+  width: 96%;
+  font-weight: normal;
+  font-size: var(--big-text);
+}
+
+h3 {
   width: 96%;
   font-weight: normal;
   font-size: var(--font-size);
@@ -307,6 +375,38 @@ h2 {
   .content {
     width: 94%;
     margin: 100px auto;
+  }
+}
+
+/* ================================
+   SIDEBAR LABELS
+================================= */
+
+.sidebar-label {
+  position: absolute;
+  right: 10px;            /* kuinka kaukana oikeasta reunasta */
+  font-size: var(--small-text);
+  color: var(--muted-text);
+  font-family: var(--font-family);
+  text-transform: uppercase;
+  pointer-events: none;  /* ei estä klikkauksia taustalla */
+  z-index: 40;
+
+}
+
+/* sijoitus pystysuunnassa */
+
+#label-controls {
+  top: 70px;   /* sama korkeus kuin controls-valikko alkaa */
+}
+
+#label-canvas {
+  top: 145px;  /* arvioitu kohta missä canvas alkaa */
+}
+
+@media (max-width: 1080px) {
+  .sidebar-label {
+    display: none;
   }
 }
 
@@ -333,7 +433,7 @@ h2 {
 .auth-container input {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: var(--border-width) solid #ccc;
   margin-top: 4px;
   box-sizing: border-box;
 }
