@@ -29,6 +29,8 @@ html, body {
   font-family: var(--font-family);
   font-size: var(--font-size);
   scroll-behavior: smooth;
+    /* overflow-x: hidden; */
+
 }
 
 
@@ -43,6 +45,7 @@ nav {
   width: 100%;
   background: var(--bg-color-yellow);
   padding: 10px 20px;
+  box-sizing: border-box;   
   /* border-bottom: var(--border-width) solid var(--border-color); */
   z-index: 50;
 }
@@ -66,7 +69,8 @@ nav a:hover {
   position: absolute;
   top: 50px;
   left: 0;
-  width: calc(100% - 0px);
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   justify-content: flex-start; /* 🔹 kaikki vasempaan laitaan */
   align-items: center;
@@ -391,6 +395,7 @@ h3 {
   text-transform: uppercase;
   pointer-events: none;  /* ei estä klikkauksia taustalla */
   z-index: 40;
+    transform: translateX(-10px);  /* siirtää sisäänpäin */
 
 }
 
@@ -450,7 +455,7 @@ h3 {
   height: auto;
 }
 
-/* --- SPRAY & PENCIL SLIDER CUSTOMIZATION --- */
+/* --- SPRAY SLIDER CUSTOMIZATION --- */
 .slider-container input[type="range"] {
   -webkit-appearance: none;
   width: 200px;
