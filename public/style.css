@@ -449,3 +449,49 @@ h3 {
   width: 100px;
   height: auto;
 }
+
+/* --- SPRAY & PENCIL SLIDER CUSTOMIZATION --- */
+.slider-container input[type="range"] {
+  -webkit-appearance: none;
+  width: 200px;
+  height: 14px; /* paksumpi track */
+  background:  var(--muted-text); /* harmaa taustarata */
+  border-radius: 10px;
+  outline: none;
+  margin: 10px 0;
+}
+
+/* --- Track (Chrome, Edge) --- */
+.slider-container input[type="range"]::-webkit-slider-runnable-track {
+  height: 14px;
+  background: var(--muted-text);
+  border-radius: 10px;
+}
+
+/* --- Thumb/pallo (Chrome, Edge) --- */
+.slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--bg-color); /* taustavärisi */
+  border-radius: 50%;             /* ympyrä */
+  margin-top: -8px;               /* keskitys trackilla */
+  cursor: pointer;
+}
+
+/* --- Firefox --- */
+.slider-container input[type="range"]::-moz-range-track {
+  height: 30px;
+  background: var(--bg-color); /* taustavärisi */
+  border-radius: 10px;
+}
+
+.slider-container input[type="range"]::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border: var(--border-width) solid var(--border-color);
+  background: var(--bg-color); /* taustavärisi */
+  border-radius: 50%;
+  cursor: pointer;
+}
