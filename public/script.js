@@ -137,18 +137,24 @@ function drawPaperBackground() {
 
 
 function resizeCanvas() {
-  const temp = document.createElement("canvas");
-  temp.width = canvas.width;
-  temp.height = canvas.height;
-  temp.getContext("2d").drawImage(canvas, 0, 0);
+  const ratio = window.devicePixelRatio || 1;
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight * 0.75;
+  // CSS-koko (näytön leveyden mukaan)
+  const cssWidth = window.innerWidth;
+  const cssHeight = window.innerHeight * 0.75;
 
-  ctx.fillStyle = taustaVari;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(temp, 0, 0);
+  canvas.style.width = cssWidth + "px";
+  canvas.style.height = cssHeight + "px";
+
+  // Piirtoalue = CSS-koko * pikselitiheys
+  canvas.width = cssWidth * ratio;
+  canvas.height = cssHeight * ratio;
+
+  ctx.scale(ratio, ratio);
+
+  drawPaperBackground();
 }
+
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
@@ -170,7 +176,9 @@ canvas.addEventListener("pointerdown", (e) => {
   tallennaUndo();
 });
 
-canvas.addEventListener("pointerup", () => piirretaan = false);
+canvas.addEventListener("pointerup", () => {
+  piirretaan = false;
+});
 
 canvas.addEventListener("pointermove", (e) => {
   if (!piirretaan) return;
@@ -199,10 +207,17 @@ canvas.addEventListener("pointermove", (e) => {
     for (let i = 0; i < sprayTiheys; i++) {
       const kulma = Math.random() * 2 * Math.PI;
       const säde = Math.random() * spraySäde;
-      ctx.fillRect(x + Math.cos(kulma) * säde, y + Math.sin(kulma) * säde, 1, 1);
+      ctx.fillRect(
+        x + Math.cos(kulma) * säde,
+        y + Math.sin(kulma) * säde,
+        1,
+        1
+      );
     }
   }
 });
+
+
 
 document.getElementById("erase").addEventListener("click", () => {
   tallennaUndo();

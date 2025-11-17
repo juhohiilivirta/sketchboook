@@ -15,10 +15,10 @@
   --muted-text: #aeaeae;
   --content-width: 70%;
   --font-family: 'Tarsius', sans-serif;
-  --font-size: clamp(10pt, 2vw + 0.5rem, 18pt);
+  --font-size: clamp(8pt, 2vw + 0.5rem, 18pt);
   --border-width: 2px;
   --small-text: 10pt;
-  --big-text: clamp(10pt, 4vw + 0.5rem, 40pt);
+  --big-text: clamp(8pt, 4vw + 0.5rem, 40pt);
 }
 
 html, body {
@@ -29,7 +29,7 @@ html, body {
   font-family: var(--font-family);
   font-size: var(--font-size);
   scroll-behavior: smooth;
-    /* overflow-x: hidden; */
+    overflow-x: hidden;
 
 }
 
@@ -44,7 +44,7 @@ nav {
   left: 0;
   width: 100%;
   background: var(--bg-color-yellow);
-  padding: 10px 20px;
+  padding: 10px 10px;
   box-sizing: border-box;   
   /* border-bottom: var(--border-width) solid var(--border-color); */
   z-index: 50;
@@ -76,8 +76,12 @@ nav a:hover {
   align-items: center;
   gap: 20px;                   /* 🔹 väli painikkeiden väliin */
   padding: 20px 10px 10px 20px;
-  /* background: var(--bg-color); */
   z-index: 10;
+  overflow-x: auto;       /* 🔹 mahdollistaa vaakaskrollin */
+  overflow-y: hidden;
+  white-space: nowrap;    /* 🔹 kaikki napit pysyvät yhdellä rivillä */
+  -webkit-overflow-scrolling: touch; /* 🔹 smooth scroll mobiilissa */
+
 }
 
 
@@ -180,7 +184,7 @@ button#save:hover {
 
 canvas {
   display: block;
-  width: 100%;
+  /* width: 100%;  ← POISTETAAN TÄMÄ */
   touch-action: none;
   border-bottom: var(--border-width) solid var(--border-color);
   margin-top: 125px;
@@ -464,6 +468,12 @@ h3 {
   border-radius: 10px;
   outline: none;
   margin: 10px 0;
+}
+
+@media (max-width: 900px) {
+.slider-container input[type="range"] {
+  width: 140px;
+}
 }
 
 /* --- Track (Chrome, Edge) --- */
