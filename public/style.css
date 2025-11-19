@@ -103,10 +103,12 @@ nav a:hover {
 /* --- Special style for frontpage SAVE ENTRY button --- */
 button#save {
   display: block;
-  padding: 10px 25px;
+  margin-top: 20px;
+  padding: 15px 25px;
   font-size: var(--font-size);
   font-family: inherit;
   border: var(--border-width) solid var(--border-color);
+  line-height: 1.2em;
   background: transparent;
   cursor: pointer;
   color: var(--text-color);
