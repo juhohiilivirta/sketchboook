@@ -84,20 +84,26 @@ const undoStack = [];
 const MAX_UNDOS = 20;
 
 function tallennaUndo() {
-  if (undoStack.length >= MAX_UNDOS) undoStack.shift();
-  undoStack.push(canvas.toDataURL());
+  const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  undoStack.push(snapshot);
+
+  if (undoStack.length > MAX_UNDOS) undoStack.shift();
 }
 
 function palautaUndo() {
   if (undoStack.length === 0) return;
-  const viimeisin = undoStack.pop();
-  const img = new Image();
-  img.onload = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0);
-  };
-  img.src = viimeisin;
+
+  const snapshot = undoStack.pop();
+
+  // Jos canvas on eri kokoinen, skaalaa sen uudelleen snapshotin kokoon
+  if (canvas.width !== snapshot.width || canvas.height !== snapshot.height) {
+    canvas.width = snapshot.width;
+    canvas.height = snapshot.height;
+  }
+
+  ctx.putImageData(snapshot, 0, 0);
 }
+
 
 let paperStyle = "blank"; // "blank" | "grid" | "dot"
 
